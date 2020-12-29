@@ -8,4 +8,4 @@ venv/
 __pycache__/
 
 # my testing stuff
-main.py
+test.py

@@ -60,3 +60,9 @@ class Course:
             res += "{}:\t{}\n".format(name, data[name])
         res += "waitlist open: {}".format('yes' if self.waitlist_available() else 'no')
         return res
+
+class CourseList:
+    def __init__(self, *courses):
+        self.courses = courses
+
+    # TODO: set up course list (this will be used for running the script)
