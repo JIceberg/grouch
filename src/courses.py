@@ -2,8 +2,9 @@ import requests
 from bs4 import BeautifulSoup
 
 class Course:
-    def __init__(self, crn: str):
-        self.crn = crn
+    def __init__(self, name: str, crn: str):
+        self.name, self.crn = name, crn
+        self.term = '202102' # default
     
     def __get_registration_info(self, term: str):
         url = 'https://oscar.gatech.edu/bprod/bwckschd.p_disp_detail_sched?term_in='
@@ -20,6 +21,7 @@ class Course:
                 return data
 
     def get_registration_info(self, term: str):
+        self.term = term
         data = self.__get_registration_info(term)
 
         if len(data) < 6: raise ValueError()
@@ -36,3 +38,25 @@ class Course:
             'waitlist': waitlist_data
         }
         return load
+
+    def is_open_by_term(self, term: str) -> bool:
+        return self.__get_registration_info(term)[2] > 0
+
+    def is_open(self) -> bool:
+        return self.is_open_by_term(self.term)
+
+    def waitlist_available_by_term(self, term: str) -> bool:
+        waitlist_data = self.get_registration_info(term)['waitlist']
+        return waitlist_data['vacant'] > 0
+
+    def waitlist_available(self) -> bool:
+        return self.waitlist_available_by_term(self.term)
+
+    def __str__(self) -> str:
+        data = self.get_registration_info(self.term)
+        res = "{}\n".format(self.name)
+        for name in data:
+            if name == 'waitlist': continue
+            res += "{}:\t{}\n".format(name, data[name])
+        res += "waitlist open: {}".format('yes' if self.waitlist_available() else 'no')
+        return res
