@@ -1,10 +1,18 @@
 import requests
 from bs4 import BeautifulSoup
+from notifier import Notifier
 
 class Course:
-    def __init__(self, name: str, crn: str):
-        self.name, self.crn = name, crn
+    def __init__(self, crn: str):
+        self.crn = crn
         self.term = '202102' # default
+        url = 'https://oscar.gatech.edu/bprod/bwckschd.p_disp_detail_sched?term_in='
+        url += self.term + '&crn_in=' + self.crn
+        with requests.Session() as s:
+            with s.get(url) as page:
+                soup = BeautifulSoup(page.content, 'html.parser')
+                headers = soup.find_all('th', class_="ddlabel")
+                self.name = headers[0].getText()
     
     def __get_registration_info(self, term: str):
         url = 'https://oscar.gatech.edu/bprod/bwckschd.p_disp_detail_sched?term_in='
@@ -61,8 +69,35 @@ class Course:
         res += "waitlist open: {}".format('yes' if self.waitlist_available() else 'no')
         return res
 
+class WaitlistNotifier(Notifier):
+    def __init__(self, course: Course):
+        self.title = 'Waitlist Available'
+        self.info, self.status_check = course.name, course.waitlist_available
+
+class OpenCourseNotifier(Notifier):
+    def __init__(self, course: Course):
+        self.title = 'Course Open'
+        self.info, self.status_check = course.name, course.is_open
+
 class CourseList:
-    def __init__(self, *courses):
+    def __init__(self, courses):
         self.courses = courses
 
-    # TODO: set up course list (this will be used for running the script)
+    def run_waitlist_notifiers(self):
+        for course in self.courses:
+            if course.waitlist_available():
+                notif = WaitlistNotifier(course)
+                notif.run_async()
+                self.courses.remove(course)
+
+    def run_available_courses(self):
+        for course in self.courses:
+            if course.is_open():
+                notif = OpenCourseNotifier(course)
+                notif.run_async()
+                self.courses.remove(course)
+
+    def run_notifiers(self):
+        while self.courses:
+            self.run_available_courses()
+            self.run_waitlist_notifiers()

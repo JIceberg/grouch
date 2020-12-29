@@ -1,6 +1,5 @@
 from pynotifier import Notification
 import time, pathlib
-from courses import Course
 
 class Notifier:
     def __init__(self, title: str, info: str, state):
@@ -16,6 +15,7 @@ class Notifier:
             duration=5,
             urgency=Notification.URGENCY_CRITICAL
         ).send()
+        time.sleep(5)
 
     def run(self):
         while not self.status_check():
@@ -25,8 +25,3 @@ class Notifier:
     def run_async(self):
         if self.status_check():
             self.send()
-
-class WaitlistNotifier(Notifier):
-    def __init__(self, course: Course):
-        self.title = 'Waitlist Available'
-        self.info, self.status_check = course.name, course.waitlist_available
