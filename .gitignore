@@ -1,0 +1,11 @@
+# generated
+.env/
+.venv/
+.vscode/
+.dist/
+env/
+venv/
+__pycache__/
+
+# my testing stuff
+main.py
