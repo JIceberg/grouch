@@ -1,4 +1,4 @@
-import requests
+import requests, time
 from bs4 import BeautifulSoup
 from notifier import Notifier
 
@@ -89,6 +89,7 @@ class CourseList:
                 notif = WaitlistNotifier(course)
                 notif.run_async()
                 self.courses.remove(course)
+            time.sleep(0.025)
 
     def run_available_courses(self):
         for course in self.courses:
@@ -96,6 +97,7 @@ class CourseList:
                 notif = OpenCourseNotifier(course)
                 notif.run_async()
                 self.courses.remove(course)
+            time.sleep(0.025)
 
     def run_notifiers(self):
         while self.courses:
