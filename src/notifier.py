@@ -6,6 +6,9 @@ class Notifier:
         self.title, self.info = title, info
         self.status_check = state
 
+    def __init__(self, title: str, info: str):
+        self.title, self.info = title, info
+
     def send(self):
         dir = pathlib.Path(__file__).parent.absolute().as_posix() + '/grouch.ico'
         Notification(
@@ -25,3 +28,6 @@ class Notifier:
     def run_async(self):
         if self.status_check():
             self.send()
+
+    def run_force(self):
+        self.send()

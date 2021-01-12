@@ -15,8 +15,6 @@ class Course:
                 headers = soup.find_all('th', class_="ddlabel")
                 self.name = headers[0].getText()
 
-        print(self)
-
     def __get_prereqs(self):
         url = 'https://oscar.gatech.edu/bprod/bwckschd.p_disp_detail_sched?term_in='
         url += self.term + '&crn_in=' + self.crn
@@ -99,7 +97,7 @@ class Course:
             if name == 'waitlist': continue
             res += "{}:\t{}\n".format(name, data[name])
         res += "waitlist open: {}\n".format('yes' if self.waitlist_available() else 'no')
-        res += "prerequisites: {}\n".format(self.get_prereqs())
+        res += "prerequisites: {}".format(self.get_prereqs())
         return res
 
 class WaitlistNotifier(Notifier):
@@ -140,6 +138,11 @@ class CourseList:
             self.run_waitlist_notifiers()
     
     def get_info(self):
+        cnt = 0
         for course in self.courses:
-            notif = Notifier(course.name, str(course), course.has_name)
-            notif.run_async()
+            notif = Notifier("Info", str(course))
+            if cnt > 0:
+                print('\n------------------------------------------\n')
+            print(course)
+            notif.run_force()
+            cnt += 1
