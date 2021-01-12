@@ -1,6 +1,7 @@
 import requests, time
 from bs4 import BeautifulSoup
 from notifier import Notifier
+import re
 
 class Course:
     def __init__(self, crn: str):
@@ -13,6 +14,37 @@ class Course:
                 soup = BeautifulSoup(page.content, 'html.parser')
                 headers = soup.find_all('th', class_="ddlabel")
                 self.name = headers[0].getText()
+
+        print(self)
+
+    def __get_prereqs(self):
+        url = 'https://oscar.gatech.edu/bprod/bwckschd.p_disp_detail_sched?term_in='
+        url += self.term + '&crn_in=' + self.crn
+
+        with requests.Session() as s:
+            with s.get(url) as page:
+                soup = BeautifulSoup(page.content, 'html.parser')
+                p = soup.find('td', class_="dddefault")
+                txt = p.getText()
+                idx = txt.index("Prerequisites:")
+                return txt[idx:len(txt)-4]
+    
+    def __is_not_fodder(self, s: str) -> bool:
+        fodder = ['undergraduate', 'graduate', 'level', 'grade', 'of', 'minimum', 'semester']
+        tmp = s.lower()
+        for fod in fodder:
+            if fod == tmp: return False
+        return True
+
+    def get_prereqs(self):
+        raw = self.__get_prereqs()
+        block = ' '.join(list(filter(lambda el: self.__is_not_fodder(el), raw[raw.index("\n")+3:].split())))
+        els = re.findall('\[[^\]]*\]|\([^\)]*\)|\"[^\"]*\"|\S+', block)
+        parsed = ' '.join(els).replace('(Undergraduate ','(')
+        return parsed
+
+    def has_name(self) -> bool:
+        return self.name != None
     
     def __get_registration_info(self, term: str):
         url = 'https://oscar.gatech.edu/bprod/bwckschd.p_disp_detail_sched?term_in='
@@ -66,7 +98,8 @@ class Course:
         for name in data:
             if name == 'waitlist': continue
             res += "{}:\t{}\n".format(name, data[name])
-        res += "waitlist open: {}".format('yes' if self.waitlist_available() else 'no')
+        res += "waitlist open: {}\n".format('yes' if self.waitlist_available() else 'no')
+        res += "prerequisites: {}\n".format(self.get_prereqs())
         return res
 
 class WaitlistNotifier(Notifier):
@@ -87,6 +120,7 @@ class CourseList:
         for course in self.courses:
             if course.waitlist_available():
                 notif = WaitlistNotifier(course)
+                print(course)
                 notif.run_async()
                 self.courses.remove(course)
             time.sleep(0.025)
@@ -95,6 +129,7 @@ class CourseList:
         for course in self.courses:
             if course.is_open():
                 notif = OpenCourseNotifier(course)
+                print(course)
                 notif.run_async()
                 self.courses.remove(course)
             time.sleep(0.025)
@@ -103,3 +138,8 @@ class CourseList:
         while self.courses:
             self.run_available_courses()
             self.run_waitlist_notifiers()
+    
+    def get_info(self):
+        for course in self.courses:
+            notif = Notifier(course.name, str(course), course.has_name)
+            notif.run_async()

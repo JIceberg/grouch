@@ -20,7 +20,9 @@ And that's it! The library is now installed and ready to be used.
 
 ## Usage
 
-The simplest usage is to simply run `python src/main.py CRN-1 CRN-2 ...` in the CLI.
+### Tracker
+
+The simplest usage is to simply run `python src/tracker.py CRN-1 CRN-2 ...` in the CLI.
 If you're a bit more advanced (i.e. you know at least some basic Python 3), then you can
 use the tools in the library to configure your own notifications and reminders. Grouch
 comes equipped with `notifier` and `courses` handlers for easy use.
@@ -35,3 +37,8 @@ notif = WaitlistNotifier(myCourse)
 notif.run()
 ```
 To run it, just do `python path/to/file.py`.
+
+### Info
+
+From the CLI, run `python src/info.py CRN-1 CRN-2` and a notification will be sent
+containing information for the class. This does not loop, unlike the tracker.

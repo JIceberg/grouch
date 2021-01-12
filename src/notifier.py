@@ -12,10 +12,10 @@ class Notifier:
             title=self.title,
             description=self.info,
             icon_path=dir,
-            duration=5,
+            duration=7,
             urgency=Notification.URGENCY_CRITICAL
         ).send()
-        time.sleep(5)
+        time.sleep(7)
 
     def run(self):
         while not self.status_check():
