@@ -35,11 +35,14 @@ class Course:
         return True
 
     def get_prereqs(self):
-        raw = self.__get_prereqs()
-        block = ' '.join(list(filter(lambda el: self.__is_not_fodder(el), raw[raw.index("\n")+3:].split())))
-        els = re.findall('\[[^\]]*\]|\([^\)]*\)|\"[^\"]*\"|\S+', block)
-        parsed = ' '.join(els).replace('(Undergraduate ','(')
-        return parsed
+        try:
+            raw = self.__get_prereqs()
+            block = ' '.join(list(filter(lambda el: self.__is_not_fodder(el), raw[raw.index("\n")+3:].split())))
+            els = re.findall('\[[^\]]*\]|\([^\)]*\)|\"[^\"]*\"|\S+', block)
+            parsed = ' '.join(els).replace('(Undergraduate ','(')
+            return parsed
+        except:
+            return "None"
 
     def has_name(self) -> bool:
         return self.name != None
