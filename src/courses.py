@@ -1,6 +1,6 @@
-import requests, time
+import requests, time, platform
 from bs4 import BeautifulSoup
-from notifier import Notifier
+import notifier, notifierMac
 import re
 
 class Course:
@@ -103,12 +103,22 @@ class Course:
         res += "prerequisites: {}".format(self.get_prereqs())
         return res
 
-class WaitlistNotifier(Notifier):
+class WaitlistNotifier(notifier.Notifier):
     def __init__(self, course: Course):
         self.title = 'Waitlist Available'
         self.info, self.status_check = course.name, course.waitlist_available
 
-class OpenCourseNotifier(Notifier):
+class OpenCourseNotifier(notifier.Notifier):
+    def __init__(self, course: Course):
+        self.title = 'Course Open'
+        self.info, self.status_check = course.name, course.is_open
+
+class WaitlistNotifierMac(notifierMac.Notifier):
+    def __init__(self, course: Course):
+        self.title = 'Waitlist Available'
+        self.info, self.status_check = course.name, course.waitlist_available
+
+class OpenCourseNotifierMac(notifierMac.Notifier):
     def __init__(self, course: Course):
         self.title = 'Course Open'
         self.info, self.status_check = course.name, course.is_open
@@ -120,7 +130,7 @@ class CourseList:
     def run_waitlist_notifiers(self):
         for course in self.courses:
             if course.waitlist_available():
-                notif = WaitlistNotifier(course)
+                notif = WaitlistNotifierMac(course) if platform.system() == "Darwin" else WaitlistNotifier(course)
                 print(course)
                 notif.run_async()
                 self.courses.remove(course)
@@ -129,7 +139,7 @@ class CourseList:
     def run_available_courses(self):
         for course in self.courses:
             if course.is_open():
-                notif = OpenCourseNotifier(course)
+                notif = OpenCourseNotifierMac(course) if platform.system() == "Darwin" else OpenCourseNotifier(course)
                 print(course)
                 notif.run_async()
                 self.courses.remove(course)
@@ -143,7 +153,9 @@ class CourseList:
     def get_info(self):
         cnt = 0
         for course in self.courses:
-            notif = Notifier("Info", str(course))
+            notif = notifier.Notifier("Info", str(course))
+            if platform.system() == "Darwin":
+                notif = notifierMac.Notifier("Info", str(course))
             if cnt > 0:
                 print('\n------------------------------------------\n')
             print(course)
