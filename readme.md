@@ -14,7 +14,7 @@ To use this project, you need Python 3.8+ installed as well as pip on your devic
 
 * Open the root of the project and open a CLI (command line interface) like powershell
 
-* Install the necessary requirements `pip install -r requirements-<os>.txt`
+* Install the necessary requirements `pip install -r requirements-<os>.txt` (note that mac users need to use requirements-unix.txt)
 
 And that's it! The library is now installed and ready to be used.
 
