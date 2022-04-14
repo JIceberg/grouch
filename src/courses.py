@@ -4,9 +4,9 @@ import notifier, notifierMac
 import re
 
 class Course:
-    def __init__(self, crn: str):
+    def __init__(self, crn: str, term: str):
         self.crn = crn
-        self.term = '202208' # default
+        self.term = term # default
         url = 'https://oscar.gatech.edu/bprod/bwckschd.p_disp_detail_sched?term_in='
         url += self.term + '&crn_in=' + self.crn
         with requests.Session() as s:
