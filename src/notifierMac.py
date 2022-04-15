@@ -8,7 +8,10 @@ end run
 '''
 
 class Notifier:
-    def __init__(self, title: str, info: str, state = None):
+    def __always_true():
+        return True
+
+    def __init__(self, title: str, info: str, state = __always_true):
         self.title, self.info = title, info
         self.status_check = state
     
