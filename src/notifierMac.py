@@ -8,13 +8,10 @@ end run
 '''
 
 class Notifier:
-    def __init__(self, title: str, info: str, state):
+    def __init__(self, title: str, info: str, state = None):
         self.title, self.info = title, info
         self.status_check = state
-
-    def __init__(self, title: str, info: str):
-        self.title, self.info = title, info
-
+    
     def send(self):
         title = self.title
         text = self.info
