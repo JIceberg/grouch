@@ -1,4 +1,5 @@
 import subprocess
+import os
 import time, pathlib
 
 CMD = '''
@@ -18,8 +19,8 @@ class Notifier:
     def send(self):
         title = self.title
         text = self.info
-        subprocess.call(['osascript', '-e', CMD, title, text])
-        time.sleep(7)
+        appleScriptNotification = 'display alert "{0} \n \n {1}" '.format(text, title)
+        os.system("osascript -e '{0}'".format(appleScriptNotification))
 
     def run(self):
         while not self.status_check():
