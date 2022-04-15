@@ -36,7 +36,7 @@ An example of a custom program would be
 ```python
 from courses import Course, WaitlistNotifier
 
-myCourse = Course(crn)
+myCourse = Course(crn, 'fall')
 notif = WaitlistNotifier(myCourse)
 
 notif.run()
