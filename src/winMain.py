@@ -40,10 +40,16 @@ class Ui(QDialog):
 
         # typeTrack = self.findChild(QComboBox, 'trackType').currentText()
         # print(crn, sem, term, typeTrack)
-        crs = Course(crn, term)
-        fullList.append(crs)
-        # courses[crs] = typeTrack
-        self.courseList.widget().addItem(f"{crs.name} | {sem}")
+        try:
+            crs = Course(crn, term)
+            fullList.append(crs)
+            # courses[crs] = typeTrack
+            self.courseList.widget().addItem(f"{crs.name} | {sem}")
+        except IndexError:
+            alrt = QMessageBox()
+            alrt.setWindowTitle("Error")
+            alrt.setText(f"CRN {crn} not found")
+            x = alrt.exec_()
 
     def startTrack(self):
         # for c in courses.keys():
