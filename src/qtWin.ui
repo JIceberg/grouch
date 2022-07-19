@@ -100,7 +100,9 @@
     </property>
    </item>
   </widget>
-  <widget class="QComboBox" name="trackType">
+  <!-- Used for selecting to track as waitlist or simply open course slots
+        multithreading wasn't working so not using for now -->
+  <!-- <widget class="QComboBox" name="trackType">
    <property name="geometry">
     <rect>
      <x>260</x>
@@ -119,20 +121,7 @@
      <string>Open Waitlist</string>
     </property>
    </item>
-  </widget>
-  <widget class="QLabel" name="label">
-   <property name="geometry">
-    <rect>
-     <x>160</x>
-     <y>10</y>
-     <width>121</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Season/Term</string>
-   </property>
-  </widget>
+  </widget> 
   <widget class="QLabel" name="label_2">
    <property name="geometry">
     <rect>
@@ -144,6 +133,19 @@
    </property>
    <property name="text">
     <string>Type of Tracking</string>
+   </property>
+  </widget> -->
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>160</x>
+     <y>10</y>
+     <width>121</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Season/Term</string>
    </property>
   </widget>
   <widget class="QLineEdit" name="CRN">

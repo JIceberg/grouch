@@ -7,8 +7,9 @@ import threading
 from datetime import datetime
 
 courses = {}
-openCourse = []
-waitlistCourse = []
+# openCourse = []
+# waitlistCourse = []
+fullList = []
 
 class Ui(QDialog):
     def __init__(self):
@@ -37,19 +38,20 @@ class Ui(QDialog):
         else:
             term = f'{now.year}' + '05' if sem.lower() == 'summer' else f'{now.year}' + '08'
 
-        typeTrack = self.findChild(QComboBox, 'trackType').currentText()
+        # typeTrack = self.findChild(QComboBox, 'trackType').currentText()
         # print(crn, sem, term, typeTrack)
         crs = Course(crn, term)
-        courses[crs] = typeTrack
+        fullList.append(crs)
+        # courses[crs] = typeTrack
         self.courseList.widget().addItem(f"{crs.name} | {sem}")
 
     def startTrack(self):
-        for c in courses.keys():
-            if courses[c] == "Open Seats":
-                openCourse.append(c)
-            else:
-                # has to be Open Waitlist, only two options on dropdown
-                waitlistCourse.append(c)
+        # for c in courses.keys():
+        #     if courses[c] == "Open Seats":
+        #         openCourse.append(c)
+        #     else:
+        #         # has to be Open Waitlist, only two options on dropdown
+        #         waitlistCourse.append(c)
     
         # all notifiers created
         # we can now watch the sun set on a grateful universe
@@ -63,15 +65,18 @@ win.setWindowTitle("Grouch UI")
 app.exec_()
 app.exit()
 
-openCList = CourseList(openCourse)
-openWList = CourseList(waitlistCourse)
+# openCList = CourseList(openCourse)
+# openWList = CourseList(waitlistCourse)
 
 # multiprocessing.Process(target=openCList.run_available_courses).start()
 # multiprocessing.Process(target=openWList.run_waitlist_notifiers).start()
-threading.Thread(target=openCList.run_available_courses).start()
-threading.Thread(target=openWList.run_waitlist_notifiers).start()
+# threading.Thread(target=openCList.run_available_courses).start()
+# threading.Thread(target=openWList.run_waitlist_notifiers).start()
 
-print("woooooo")
+# print("woooooo")
+
+# fullList = openCourse + waitlistCourse
+CourseList(fullList).run_notifiers()
 
 # while True:
 #     pass
