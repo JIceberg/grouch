@@ -10,61 +10,97 @@ courses = {}
 # openCourse = []
 # waitlistCourse = []
 fullList = []
+fullDict = {}
+
+# TODO: MAKE THING SO THEY CAN REMOVE CRNs 
 
 class Ui(QDialog):
     def __init__(self):
         super(Ui, self).__init__() # Call the inherited classes __init__ method
         uic.loadUi('src\qtWin.ui', self) # Load the .ui file
         
+        # find QScrollArea (list where courses added to)
         self.courseList = self.findChild(QScrollArea, 'courseList')
         self.courseList.setWidget(QListWidget())
 
+        # binding button to method
         self.addBtn = self.findChild(QPushButton, 'addCourse')
         self.addBtn.clicked.connect(self.newCourse)
 
+        # binding term button to method
+        self.termBtn = self.findChild(QPushButton, 'setTerm')
+        self.termBtn.clicked.connect(self.tSet)
+
+        # binding button to close window method, starts tracking courses
         self.track = self.findChild(QPushButton, 'startTracking')
-        self.track.clicked.connect(self.startTrack)
+        self.track.clicked.connect(self.close)
+
+        self.dCourse = self.findChild(QPushButton, "delCourse")
+        self.dCourse.clicked.connect(self.rmvCourse)
+
+        self.term = ""
 
         self.show() # Show the GUI
     
     def newCourse(self):
-        crn = self.findChild(QLineEdit, 'CRN').text()
-        sem = self.findChild(QComboBox, 'term').currentText()
-        
-        now = datetime.now()
-        term = ""
-        if sem.lower() == 'spring':
-            term = f'{now.year + 1}' + '02' if now.month > 4 else f'{now.year}' + '02'
-        else:
-            term = f'{now.year}' + '05' if sem.lower() == 'summer' else f'{now.year}' + '08'
-
-        # typeTrack = self.findChild(QComboBox, 'trackType').currentText()
-        # print(crn, sem, term, typeTrack)
-        try:
-            crs = Course(crn, term)
-            fullList.append(crs)
-            # courses[crs] = typeTrack
-            self.courseList.widget().addItem(f"{crs.name} | {sem}")
-        except IndexError:
+        if self.term == "":
+            # check if user confirmed/set a term to search for CRNs during
             alrt = QMessageBox()
             alrt.setWindowTitle("Error")
-            alrt.setText(f"CRN {crn} not found")
+            alrt.setText(f"Term not set (choose from dropdown and click \"Set Term\")")
             x = alrt.exec_()
 
-    def startTrack(self):
-        # for c in courses.keys():
-        #     if courses[c] == "Open Seats":
-        #         openCourse.append(c)
-        #     else:
-        #         # has to be Open Waitlist, only two options on dropdown
-        #         waitlistCourse.append(c)
-    
-        # all notifiers created
-        # we can now watch the sun set on a grateful universe
-        self.close()
+        else: 
+            crn = self.findChild(QLineEdit, 'CRN').text()
+            
+            try:
+                # create Course item and add to list to be tracked
+                crs = Course(crn, self.term)
+                # add to dictionary for fast removal if necessary
+                fullDict[crn] = crs
+                
+                # add item to list in QScrollArea
+                self.courseList.widget().addItem(crs.name)
+            except IndexError:
+                # means something wacky happened and oscar didn't have course
+                alrt = QMessageBox()
+                alrt.setWindowTitle("Error")
+                alrt.setText(f"CRN {crn} not found")
+                x = alrt.exec_()
+
+    def tSet(self):
+        # grab the term from dropdown
+        sem = self.findChild(QComboBox, 'term').currentText()
+        now = datetime.now()
+
+        # use parsing definitely not ctrl-c ctrl-v from tracking.py to change fall/spring/summer to a oscar acceptable format
+        if sem.lower() == 'spring':
+            self.term = f'{now.year + 1}' + '02' if now.month > 4 else f'{now.year}' + '02'
+        else:
+            self.term = f'{now.year}' + '05' if sem.lower() == 'summer' else f'{now.year}' + '08'
+
+        # changing label to reflect term
+        self.findChild(QLabel, 'curTerm').setText(f"Current Term: {sem}")
+
+        # small popup to confirm term set
+        # gets annoying after a while though
+        # alrt = QMessageBox()
+        # alrt.setWindowTitle("Term Set!")
+        # alrt.setText(f"Term set to {self.term} ({sem})")
+        # x = alrt.exec_()
+
+    def rmvCourse(self):
+        # track all selected indices in QScrollArea
+        selected = self.courseList.widget().selectedIndexes()
+        # for each selection, grab data, remove CRN from fullDict (won't track) and remove from QScrollArea
+        for ind in selected:
+            inf = ind.data()
+            crn = inf.split(" - ")[1]
+            fullDict.pop(crn)
+            self.courseList.widget().takeItem(ind.row())
             
 
-    
+# generic driver code
 app = QApplication([])
 win = Ui()
 win.setWindowTitle("Grouch UI")
@@ -82,7 +118,9 @@ app.exit()
 # print("woooooo")
 
 # fullList = openCourse + waitlistCourse
-CourseList(fullList).run_notifiers()
 
-# while True:
-#     pass
+# create CourseList of courses and run notifiers
+# future goal: use multithreading or something to concurrently run waitlist and open course trackers (wasn't able to initially get working)
+# so you can track waitlists of some sections (i.e. lab blocks) while checking openings of others (i.e. general lecture blocks)
+fullList = [fullDict[x] for x in fullDict.keys()]
+CourseList(fullList).run_notifiers()

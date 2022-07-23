@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>462</width>
-    <height>313</height>
+    <height>367</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,7 +16,7 @@
   <widget class="QPushButton" name="addCourse">
    <property name="geometry">
     <rect>
-     <x>370</x>
+     <x>360</x>
      <y>20</y>
      <width>81</width>
      <height>41</height>
@@ -30,7 +30,7 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>90</y>
+     <y>130</y>
      <width>441</width>
      <height>181</height>
     </rect>
@@ -52,21 +52,21 @@
   <widget class="QLabel" name="scrollLabel">
    <property name="geometry">
     <rect>
-     <x>180</x>
-     <y>60</y>
+     <x>10</x>
+     <y>100</y>
      <width>121</width>
      <height>21</height>
     </rect>
    </property>
    <property name="text">
-    <string>Tracking Courses</string>
+    <string>Tracking Courses:</string>
    </property>
   </widget>
   <widget class="QPushButton" name="startTracking">
    <property name="geometry">
     <rect>
-     <x>110</x>
-     <y>280</y>
+     <x>10</x>
+     <y>330</y>
      <width>231</width>
      <height>23</height>
     </rect>
@@ -78,9 +78,9 @@
   <widget class="QComboBox" name="term">
    <property name="geometry">
     <rect>
-     <x>150</x>
+     <x>10</x>
      <y>30</y>
-     <width>91</width>
+     <width>81</width>
      <height>21</height>
     </rect>
    </property>
@@ -100,45 +100,10 @@
     </property>
    </item>
   </widget>
-  <!-- Used for selecting to track as waitlist or simply open course slots
-        multithreading wasn't working so not using for now -->
-  <!-- <widget class="QComboBox" name="trackType">
-   <property name="geometry">
-    <rect>
-     <x>260</x>
-     <y>30</y>
-     <width>91</width>
-     <height>21</height>
-    </rect>
-   </property>
-   <item>
-    <property name="text">
-     <string>Open Seats</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Open Waitlist</string>
-    </property>
-   </item>
-  </widget> 
-  <widget class="QLabel" name="label_2">
-   <property name="geometry">
-    <rect>
-     <x>270</x>
-     <y>10</y>
-     <width>101</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Type of Tracking</string>
-   </property>
-  </widget> -->
   <widget class="QLabel" name="label">
    <property name="geometry">
     <rect>
-     <x>160</x>
+     <x>60</x>
      <y>10</y>
      <width>121</width>
      <height>16</height>
@@ -151,7 +116,7 @@
   <widget class="QLineEdit" name="CRN">
    <property name="geometry">
     <rect>
-     <x>10</x>
+     <x>230</x>
      <y>30</y>
      <width>113</width>
      <height>20</height>
@@ -161,7 +126,7 @@
   <widget class="QLabel" name="label_3">
    <property name="geometry">
     <rect>
-     <x>50</x>
+     <x>270</x>
      <y>10</y>
      <width>47</width>
      <height>13</height>
@@ -169,6 +134,45 @@
    </property>
    <property name="text">
     <string>CRN</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="setTerm">
+   <property name="geometry">
+    <rect>
+     <x>100</x>
+     <y>30</y>
+     <width>61</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Set Term</string>
+   </property>
+  </widget>
+  <widget class="QLabel" name="curTerm">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>60</y>
+     <width>101</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Current Term: none</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="delCourse">
+   <property name="geometry">
+    <rect>
+     <x>270</x>
+     <y>330</y>
+     <width>171</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Remove Selected Courses</string>
    </property>
   </widget>
  </widget>
