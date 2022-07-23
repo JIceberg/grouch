@@ -1,8 +1,8 @@
-from multiprocessing.connection import wait
+# from multiprocessing.connection import wait
 from PyQt5.QtWidgets import *
 from PyQt5 import uic
 from courses import *
-import threading
+# import threading
 # import multiprocessing
 from datetime import datetime
 
